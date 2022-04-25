@@ -1,6 +1,6 @@
 import flatpickr from 'flatpickr';
 import "flatpickr/dist/flatpickr.min.css";
-import Notiflix from 'notiflix';
+import Notiflix, { Notify } from 'notiflix';
 
 const refs = {
     input: document.querySelector('#datetime-picker'),
@@ -9,17 +9,53 @@ const refs = {
     hours: document.querySelector('[data-hours]'),
     minutes: document.querySelector('[data-minutes]'),
     seconds: document.querySelector('[data-seconds]'),
-}
+};
 
+const curentDate = Date.now(); // теперішня дата для перевірки
+let selectedDate = null; // вибрана дата попердньо 0
+refs.startBtn.disabled = true; // кнопка попередньо неактивна
+
+// готовий об'єкт
 const options = {
   enableTime: true,
   time_24hr: true,
   defaultDate: new Date(),
   minuteIncrement: 1,
   onClose(selectedDates) {
-    console.log(selectedDates[0]);
+      console.log(selectedDates[0]); // вибрана дата на календарі
+      selectedDate = selectedDates[0]; // прирівнюю дати
+      checkDate(selectedDate)
   },
 };
+
+const calendar = flatpickr(refs.input, options); // роблю каленлар в інпуті
+
+refs.startBtn.addEventListener('click', onStart);
+
+
+// функція перевірки вибору дати на минуле і майбутнє
+function checkDate(selectedDate) {
+    //якщо вибрана дата в майбутньому
+    if (selectedDate > curentDate) {
+        refs.startBtn.disabled = false;
+    } else { //якщо вибана дата в минулому
+         Notiflix.Notify.failure('Please choose a date in the future');
+    }
+}
+
+function onStart() {
+    refs.startBtn.disabled = true;
+    flatPick.destroy();
+    refs.input.disabled = isDisabled;
+    calculationStart();
+}
+
+function calculationStart() {
+    setInterval(() => {
+        const diffTime = convertMs(choiceData - Date.now())
+        changeHTML(diffTime);
+    }, 1000);
+}
 
 function addLeadingZero(value) {
     return String(value).padStart(2, '0');
@@ -35,11 +71,19 @@ function convertMs(ms) {
   // Remaining days
   const days = Math.floor(ms / day);
   // Remaining hours
-  const hours = addLeadingZero(Math.floor((ms % day) / hour));
+  const hours = Math.floor((ms % day) / hour);
   // Remaining minutes
-  const minutes = addLeadingZero(Math.floor(((ms % day) % hour) / minute));
+  const minutes = Math.floor(((ms % day) % hour) / minute);
   // Remaining seconds
-  const seconds = addLeadingZero(Math.floor((((ms % day) % hour) % minute) / second));
+  const seconds = Math.floor((((ms % day) % hour) % minute) / second);
 
   return { days, hours, minutes, seconds };
+}
+
+// записую в хтмл значення цифрами
+function changeHTML({ days, hours, minutes, seconds }) {
+    refs.days.textContent = days;
+    refs.hours.textContent = addLeadingZero(hours);
+    refs.minutes.textContent = addLeadingZero(minutes);
+    refs.seconds.textContent = addLeadingZero(seconds);
 }
