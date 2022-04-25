@@ -16,3 +16,11 @@ img {
   display: block;
   max-width: 100%;
 }
+
+.field{
+  display: inline-block;
+}
+
+.label{
+  margin-right: 15px;
+}
