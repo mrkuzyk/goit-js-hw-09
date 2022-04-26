@@ -30,33 +30,34 @@ const options = {
 
 const calendar = flatpickr(refs.input, options); // роблю каленлар в інпуті
 
+// коли ми залізли в календар то кнопка старт активується
+refs.input.addEventListener('focus', ()=> refs.startBtn.disabled = false )
+// слухач на клік по кнопці старт
 refs.startBtn.addEventListener('click', onStart);
 
 
 // функція перевірки вибору дати на минуле і майбутнє
 function checkDate(selectedDate) {
-    //якщо вибрана дата в майбутньому
     if (selectedDate > curentDate) {
+        //якщо вибрана дата в майбутньому
         refs.startBtn.disabled = false;
-    } else { //якщо вибана дата в минулому
+    } else { 
+        //якщо вибана дата в минулому
          Notiflix.Notify.failure('Please choose a date in the future');
     }
 }
 
 function onStart() {
-    refs.startBtn.disabled = true;
-    flatPick.destroy();
-    refs.input.disabled = isDisabled;
-    calculationStart();
-}
+    refs.startBtn.disabled = true; //після запуску таймера кнопка стає неактивна
 
-function calculationStart() {
+    // інтервал в 1 секунду для слідкування зміни таймера
     setInterval(() => {
-        const diffTime = convertMs(choiceData - Date.now())
-        changeHTML(diffTime);
+        const diffTime = convertMs(selectedDate - Date.now()) // вираховую різницю  між вибраним часом і зараз
+        changeHTML(diffTime); // функція малювання змін в хтмл
     }, 1000);
 }
 
+// якщо одна цифра то всерівно буде два числа 
 function addLeadingZero(value) {
     return String(value).padStart(2, '0');
 }
