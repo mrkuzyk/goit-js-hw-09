@@ -11,11 +11,11 @@ const refs = {
     seconds: document.querySelector('[data-seconds]'),
 };
 
-const curentDate = Date.now(); // теперішня дата для перевірки
-let selectedDate = null; // вибрана дата попердньо 0
-refs.startBtn.disabled = true; // кнопка попередньо неактивна
+const curentDate = Date.now(); //? теперішня дата для перевірки
+let selectedDate = null; //? вибрана дата попердньо 0
+refs.startBtn.disabled = true; //? кнопка попередньо неактивна
 
-// готовий об'єкт
+//? готовий об'єкт
 const options = {
   enableTime: true,
   time_24hr: true,
@@ -28,36 +28,35 @@ const options = {
   },
 };
 
-const calendar = flatpickr(refs.input, options); // роблю каленлар в інпуті
+const calendar = flatpickr(refs.input, options); //? роблю каленлар в інпуті
 
-// коли ми залізли в календар то кнопка старт активується
-refs.input.addEventListener('focus', ()=> refs.startBtn.disabled = false )
-// слухач на клік по кнопці старт
+//? слухач на клік по кнопці старт
 refs.startBtn.addEventListener('click', onStart);
 
 
-// функція перевірки вибору дати на минуле і майбутнє
+//? функція перевірки вибору дати на минуле і майбутнє
 function checkDate(selectedDate) {
     if (selectedDate > curentDate) {
-        //якщо вибрана дата в майбутньому
+        //? якщо вибрана дата в майбутньому
         refs.startBtn.disabled = false;
     } else { 
-        //якщо вибана дата в минулому
-         Notiflix.Notify.failure('Please choose a date in the future');
+        // ? якщо вибана дата в минулому
+        Notiflix.Notify.failure('Please choose a date in the future');
+        // refs.startBtn.disabled = true;
     }
 }
 
 function onStart() {
-    refs.startBtn.disabled = true; //після запуску таймера кнопка стає неактивна
+    refs.startBtn.disabled = true; //? після запуску таймера кнопка стає неактивна
 
-    // інтервал в 1 секунду для слідкування зміни таймера
+    //? інтервал в 1 секунду для слідкування зміни таймера
     setInterval(() => {
-        const diffTime = convertMs(selectedDate - Date.now()) // вираховую різницю  між вибраним часом і зараз
-        changeHTML(diffTime); // функція малювання змін в хтмл
+        const diffTime = convertMs(selectedDate - Date.now()) //? вираховую різницю  між вибраним часом і зараз
+        changeHTML(diffTime); //? функція малювання змін в хтмл
     }, 1000);
 }
 
-// якщо одна цифра то всерівно буде два числа 
+//? якщо одна цифра то всерівно буде два числа 
 function addLeadingZero(value) {
     return String(value).padStart(2, '0');
 }
@@ -81,7 +80,7 @@ function convertMs(ms) {
   return { days, hours, minutes, seconds };
 }
 
-// записую в хтмл значення цифрами
+//? записую в хтмл значення цифрами
 function changeHTML({ days, hours, minutes, seconds }) {
     refs.days.textContent = days;
     refs.hours.textContent = addLeadingZero(hours);
