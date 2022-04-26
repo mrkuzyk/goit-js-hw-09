@@ -48,7 +48,8 @@ function checkDate(selectedDate) {
 
 function onStart() {
     refs.startBtn.disabled = true; //? після запуску таймера кнопка стає неактивна
-
+    refs.input.disabled = true; //? після запуску неможна змінити дату
+    
     //? інтервал в 1 секунду для слідкування зміни таймера
     setInterval(() => {
         const diffTime = convertMs(selectedDate - Date.now()) //? вираховую різницю  між вибраним часом і зараз
